@@ -1,0 +1,192 @@
+#include <ultra64.h>
+#include "sm64.h"
+#include "behavior_data.h"
+#include "model_ids.h"
+#include "seq_ids.h"
+#include "dialog_ids.h"
+#include "segment_symbols.h"
+#include "level_commands.h"
+#include "game/level_update.h"
+#include "levels/scripts.h"
+#include "actors/common1.h"
+#include "make_const_nonconst.h"
+
+#include "areas/1/custom.model.inc.h"
+
+#include "levels/cotmc/header.h"
+#include "levels/hmc/header.h"
+
+extern u8 _cotmc_segment_ESegmentRomStart[];
+extern u8 _cotmc_segment_ESegmentRomEnd[];
+
+const LevelScript level_cotmc_entry[] = {
+	INIT_LEVEL(),
+	LOAD_MIO0(0x07, _hmc_segment_7SegmentRomStart, _hmc_segment_7SegmentRomEnd),
+	LOAD_RAW(0x1A, _hmcSegmentRomStart, _hmcSegmentRomEnd),
+	LOAD_RAW(0x0E, _cotmc_segment_ESegmentRomStart, _cotmc_segment_ESegmentRomEnd),
+	LOAD_MIO0(0xA, _bbh_skybox_mio0SegmentRomStart, _bbh_skybox_mio0SegmentRomEnd),
+	LOAD_MIO0(8, _common0_mio0SegmentRomStart, _common0_mio0SegmentRomEnd),
+	LOAD_RAW(15, _common0_geoSegmentRomStart, _common0_geoSegmentRomEnd),
+	LOAD_MIO0(5, _group8_mio0SegmentRomStart, _group8_mio0SegmentRomEnd),
+	LOAD_RAW(12, _group8_geoSegmentRomStart, _group8_geoSegmentRomEnd),
+	LOAD_MIO0(6, _group13_mio0SegmentRomStart, _group13_mio0SegmentRomEnd),
+	LOAD_RAW(13, _group13_geoSegmentRomStart, _group13_geoSegmentRomEnd),
+	ALLOC_LEVEL_POOL(),
+	MARIO(/*model*/ MODEL_MARIO, /*behParam*/ 0x00000001, /*beh*/ bhvMario),
+	// Level Specific Models
+	LOAD_MODEL_FROM_GEO(MODEL_HMC_WOODEN_DOOR,          wooden_door_geo),
+	LOAD_MODEL_FROM_GEO(MODEL_HMC_METAL_DOOR,           metal_door_geo),
+	LOAD_MODEL_FROM_GEO(MODEL_HMC_HAZY_MAZE_DOOR,       hazy_maze_door_geo),
+	LOAD_MODEL_FROM_GEO(MODEL_HMC_METAL_PLATFORM,       hmc_geo_0005A0),
+	LOAD_MODEL_FROM_GEO(MODEL_HMC_METAL_ARROW_PLATFORM, hmc_geo_0005B8),
+	LOAD_MODEL_FROM_GEO(MODEL_HMC_ELEVATOR_PLATFORM,    hmc_geo_0005D0),
+	LOAD_MODEL_FROM_GEO(MODEL_HMC_ROLLING_ROCK,         hmc_geo_000548),
+	LOAD_MODEL_FROM_GEO(MODEL_HMC_ROCK_PIECE,           hmc_geo_000570),
+	LOAD_MODEL_FROM_GEO(MODEL_HMC_ROCK_SMALL_PIECE,     hmc_geo_000588),
+	LOAD_MODEL_FROM_GEO(MODEL_HMC_RED_GRILLS,           hmc_geo_000530),
+	// Unspecified Models
+	LOAD_MODEL_FROM_GEO(22,  warp_pipe_geo),
+	LOAD_MODEL_FROM_GEO(23,  bubbly_tree_geo),
+	LOAD_MODEL_FROM_GEO(24,  spiky_tree_geo),
+	LOAD_MODEL_FROM_GEO(25,  snow_tree_geo),
+	LOAD_MODEL_FROM_GEO(27,  palm_tree_geo),
+	LOAD_MODEL_FROM_GEO(29,  wooden_door_geo),
+	LOAD_MODEL_FROM_GEO(31,  metal_door_geo),
+	LOAD_MODEL_FROM_GEO(32,  hazy_maze_door_geo),
+	LOAD_MODEL_FROM_GEO(34,  castle_door_0_star_geo),
+	LOAD_MODEL_FROM_GEO(35,  castle_door_1_star_geo),
+	LOAD_MODEL_FROM_GEO(36,  castle_door_3_stars_geo),
+	LOAD_MODEL_FROM_GEO(37,  key_door_geo),
+	LOAD_MODEL_FROM_GEO(38,  castle_door_geo),
+	// LOAD_MODEL_FROM_DL(84, 0x05002e00, 4),
+	// LOAD_MODEL_FROM_DL(86, 0x05003120, 4),
+	// LOAD_MODEL_FROM_DL(132, 0x08025f08, 4),
+	// LOAD_MODEL_FROM_DL(158, 0x0302c8a0, 4),
+	// LOAD_MODEL_FROM_DL(159, 0x0302bcd0, 4),
+	// LOAD_MODEL_FROM_DL(161, 0x0301cb00, 4),
+	// LOAD_MODEL_FROM_DL(164, 0x04032a18, 4),
+	// LOAD_MODEL_FROM_DL(201, 0x080048e0, 4),
+	// LOAD_MODEL_FROM_DL(218, 0x08024bb8, 4),
+	JUMP_LINK(script_func_global_1),
+	JUMP_LINK(script_func_global_9),
+	JUMP_LINK(script_func_global_14),
+	JUMP_LINK(local_area_cotmc_1_),
+	FREE_LEVEL_POOL(),
+	MARIO_POS(1, 135, 0, 100, 0),
+	CALL(/*arg*/ 0, /*func*/ lvl_init_or_update),
+	CALL_LOOP(/*arg*/ 1, /*func*/ lvl_init_or_update),
+	CLEAR_LEVEL(),
+	SLEEP_BEFORE_EXIT(/*frames*/ 1),
+	EXIT(),
+};
+
+const LevelScript local_area_cotmc_1_[] = {
+	AREA(1, Geo_cotmc_1_0x3301700),
+	TERRAIN(col_cotmc_1_0xe04d488),
+	SET_BACKGROUND_MUSIC(0, 17),
+	TERRAIN_TYPE(2),
+	JUMP_LINK(local_objects_cotmc_1_),
+	JUMP_LINK(local_warps_cotmc_1_),
+	END_AREA(),
+	RETURN()
+};
+
+const LevelScript local_objects_cotmc_1_[] = {
+	OBJECT_WITH_ACTS(0, 361, 0, -476, 0, 90, 0, 0xa0000,  bhvSpinAirborneWarp, 31),
+	OBJECT_WITH_ACTS(0, 0, 0, 0, 0, 0, 0, 0x0,  bhvInitializeChangingWaterLevel, 31),
+	OBJECT_WITH_ACTS(57, 3724, -1660, -14, 0, 0, 0, 0x0,  bhvWaterLevelDiamond, 31),
+	OBJECT_WITH_ACTS(137, 1337, 300, -915, 0, 0, 0, 0x10000,  bhvExclamationBox, 31),
+	OBJECT_WITH_ACTS(85, 607, -755, -5325, 0, 0, 0, 0x10000,  bhvCapSwitch, 31),
+	OBJECT_WITH_ACTS(0, 897, -30, -1582, 0, 0, 0, 0x0,  bhvWaterLevelDiamond, 31),
+	OBJECT_WITH_ACTS(59, 1989, -755, 3263, 0, 17, 0, 0x0,  bhvWdwSquareFloatingPlatform, 31),
+	OBJECT_WITH_ACTS(57, 3009, -88, 3044, 0, 0, 0, 0x0,  bhvWaterLevelDiamond, 31),
+	OBJECT_WITH_ACTS(59, 811, -1370, 2996, 0, 346, 0, 0x0,  bhvWdwSquareFloatingPlatform, 31),
+	OBJECT_WITH_ACTS(59, 764, -50, -3016, 0, 254, 0, 0x0,  bhvWdwSquareFloatingPlatform, 31),
+	OBJECT_WITH_ACTS(59, 680, -50, -3931, 0, 140, 0, 0x0,  bhvWdwSquareFloatingPlatform, 31),
+	OBJECT_WITH_ACTS(59, 687, -50, -4813, 0, 39, 0, 0x0,  bhvWdwSquareFloatingPlatform, 31),
+	OBJECT_WITH_ACTS(59, 1363, -50, -5303, 0, 336, 0, 0x0,  bhvWdwSquareFloatingPlatform, 31),
+	OBJECT_WITH_ACTS(59, -5260, -873, 2497, 0, 331, 0, 0x0,  bhvWdwSquareFloatingPlatform, 31),
+	OBJECT_WITH_ACTS(57, 1174, -735, -5374, 0, 0, 0, 0x0,  bhvWaterLevelDiamond, 31),
+	OBJECT_WITH_ACTS(129, 1512, -560, -2525, 0, 0, 0, 0x0,  bhvHiddenObject, 31),
+	OBJECT_WITH_ACTS(129, 1516, -366, -2516, 0, 0, 0, 0x0,  bhvHiddenObject, 31),
+	OBJECT_WITH_ACTS(129, 1308, -560, -2526, 0, 0, 0, 0x0,  bhvHiddenObject, 31),
+	OBJECT_WITH_ACTS(129, 1511, -755, -2540, 0, 0, 0, 0x0,  bhvHiddenObject, 31),
+	OBJECT_WITH_ACTS(129, 1110, -755, -2531, 0, 0, 0, 0x0,  bhvHiddenObject, 31),
+	OBJECT_WITH_ACTS(129, 1305, -755, -2546, 0, 0, 0, 0x0,  bhvHiddenObject, 31),
+	OBJECT_WITH_ACTS(207, 1338, -755, -2937, 0, 180, 0, 0x0,  bhvFloorSwitchHiddenObjects, 31),
+	OBJECT_WITH_ACTS(137, 3667, 350, -487, 0, 0, 0, 0x10000,  bhvExclamationBox, 31),
+	OBJECT_WITH_ACTS(0, 2340, 10, 26, 0, 270, 0, 0x10000,  bhvOpenableGrill, 31),
+	OBJECT_WITH_ACTS(207, 1059, -366, 768, 0, 180, 0, 0x0,  bhvFloorSwitchGrills, 31),
+	OBJECT_WITH_ACTS(31, -71, 4, -540, 0, 90, 0, 0x0,  bhvDoor, 31),
+	OBJECT_WITH_ACTS(31, 2611, -1678, -1, 0, 90, 0, 0x0,  bhvDoor, 31),
+	OBJECT_WITH_ACTS(31, 933, -1678, 666, 0, 180, 0, 0x0,  bhvDoor, 31),
+	OBJECT_WITH_ACTS(31, -2276, 1106, 3007, 0, 90, 0, 0x0,  bhvDoor, 31),
+	OBJECT_WITH_ACTS(31, -3266, 1106, 4825, 0, 180, 0, 0x0,  bhvDoor, 31),
+	OBJECT_WITH_ACTS(31, -940, -149, 5826, 0, 270, 0, 0x0,  bhvDoor, 31),
+	OBJECT_WITH_ACTS(31, 898, 4, -1589, 0, 0, 0, 0x0,  bhvDoor, 31),
+	OBJECT_WITH_ACTS(0, -3257, 1075, 4846, 0, 0, 0, 0x0,  bhvWaterLevelDiamond, 31),
+	OBJECT_WITH_ACTS(0, -2177, 1222, 2993, 0, 0, 0, 0x0,  bhvWaterLevelDiamond, 31),
+	OBJECT_WITH_ACTS(57, -5242, -853, 2491, 0, 0, 0, 0x0,  bhvWaterLevelDiamond, 31),
+	OBJECT_WITH_ACTS(137, -3478, 1690, 2136, 0, 0, 0, 0x10000,  bhvExclamationBox, 31),
+	OBJECT_WITH_ACTS(57, -1383, -173, 5808, 0, 0, 0, 0x0,  bhvWaterLevelDiamond, 31),
+	OBJECT_WITH_ACTS(137, -3541, 1452, 6167, 0, 0, 0, 0x10000,  bhvExclamationBox, 31),
+	OBJECT_WITH_ACTS(59, 374, -173, 5637, 0, 119, 0, 0x0,  bhvWdwSquareFloatingPlatform, 31),
+	OBJECT_WITH_ACTS(59, -957, 341, 3347, 0, 346, 0, 0x0,  bhvWdwSquareFloatingPlatform, 31),
+	OBJECT_WITH_ACTS(59, 5910, -173, 3657, 0, 0, 0, 0x0,  bhvWdwSquareFloatingPlatform, 31),
+	OBJECT_WITH_ACTS(59, 1832, 0, -1006, 0, 110, 0, 0x0,  bhvWdwSquareFloatingPlatform, 31),
+	OBJECT_WITH_ACTS(59, 2005, -173, 5736, 0, 288, 0, 0x0,  bhvWdwSquareFloatingPlatform, 31),
+	OBJECT_WITH_ACTS(59, 1163, -173, 5773, 0, 56, 0, 0x0,  bhvWdwSquareFloatingPlatform, 31),
+	OBJECT_WITH_ACTS(105, 1024, 0, 880, 0, 0, 0, 0x0,  bhvSkeeter, 31),
+	OBJECT_WITH_ACTS(105, 4318, -935, -750, 0, 0, 0, 0x0,  bhvSkeeter, 31),
+	OBJECT_WITH_ACTS(105, 3050, -813, 709, 0, 0, 0, 0x0,  bhvSkeeter, 31),
+	OBJECT_WITH_ACTS(105, 992, -1682, 1988, 0, 0, 0, 0x0,  bhvSkeeter, 31),
+	OBJECT_WITH_ACTS(105, 1237, 0, -4293, 0, 0, 0, 0x0,  bhvSkeeter, 31),
+	OBJECT_WITH_ACTS(105, 697, -755, 3395, 0, 0, 0, 0x0,  bhvSkeeter, 31),
+	OBJECT_WITH_ACTS(105, 717, -836, 2632, 0, 0, 0, 0x0,  bhvSkeeter, 31),
+	OBJECT_WITH_ACTS(105, -4913, 664, 2980, 0, 0, 0, 0x0,  bhvSkeeter, 31),
+	OBJECT_WITH_ACTS(105, -4834, 812, 1264, 0, 0, 0, 0x0,  bhvSkeeter, 31),
+	OBJECT_WITH_ACTS(105, 1457, -209, 6292, 0, 0, 0, 0x0,  bhvSkeeter, 31),
+	OBJECT_WITH_ACTS(105, 706, -209, 5380, 0, 0, 0, 0x0,  bhvSkeeter, 31),
+	OBJECT_WITH_ACTS(0, -4399, 824, 1529, 0, 0, 0, 0x320000,  bhvRotatingPlatform, 31),
+	OBJECT_WITH_ACTS(122, 2908, 81, 5807, 0, 272, 0, 0x0,  bhvStar, 31),
+	OBJECT_WITH_ACTS(57, 2779, -1660, -3450, 0, 0, 0, 0x0,  bhvWaterLevelDiamond, 31),
+	OBJECT_WITH_ACTS(57, 3982, -750, -5039, 0, 0, 0, 0x0,  bhvWaterLevelDiamond, 31),
+	OBJECT_WITH_ACTS(59, 3942, -1682, -3893, 0, 8, 0, 0x0,  bhvWdwSquareFloatingPlatform, 31),
+	OBJECT_WITH_ACTS(59, 4180, -1682, -2973, 0, 69, 0, 0x0,  bhvWdwSquareFloatingPlatform, 31),
+	OBJECT_WITH_ACTS(59, 4124, 804, -4692, 0, 154, 0, 0x0,  bhvWdwSquareFloatingPlatform, 31),
+	OBJECT_WITH_ACTS(129, 3962, -1682, -4422, 0, 0, 0, 0x0,  bhvHiddenObject, 31),
+	OBJECT_WITH_ACTS(129, 4164, -1682, -4420, 0, 0, 0, 0x0,  bhvHiddenObject, 31),
+	OBJECT_WITH_ACTS(129, 4364, -1682, -4419, 0, 0, 0, 0x0,  bhvHiddenObject, 31),
+	OBJECT_WITH_ACTS(129, 4564, -1682, -4421, 0, 0, 0, 0x0,  bhvHiddenObject, 31),
+	OBJECT_WITH_ACTS(129, 4563, -1478, -4421, 0, 0, 0, 0x0,  bhvHiddenObject, 31),
+	OBJECT_WITH_ACTS(129, 4362, -1478, -4413, 0, 0, 0, 0x0,  bhvHiddenObject, 31),
+	OBJECT_WITH_ACTS(129, 4160, -1478, -4408, 0, 0, 0, 0x0,  bhvHiddenObject, 31),
+	OBJECT_WITH_ACTS(129, 4559, -1085, -4412, 0, 0, 0, 0x0,  bhvHiddenObject, 31),
+	OBJECT_WITH_ACTS(129, 4361, -1279, -4417, 0, 0, 0, 0x0,  bhvHiddenObject, 31),
+	OBJECT_WITH_ACTS(129, 4563, -1279, -4410, 0, 0, 0, 0x0,  bhvHiddenObject, 31),
+	OBJECT_WITH_ACTS(207, 3623, -1682, -2799, 0, 180, 0, 0x0,  bhvFloorSwitchHiddenObjects, 31),
+	OBJECT_WITH_ACTS(57, 3975, -251, -1965, 0, 0, 0, 0x0,  bhvWaterLevelDiamond, 31),
+	OBJECT_WITH_ACTS(137, 4125, 1154, -4690, 0, 0, 0, 0x10000,  bhvExclamationBox, 31),
+	OBJECT_WITH_ACTS(122, 8628, -2030, -3493, 0, 270, 0, 0x1000000,  bhvStar, 31),
+	OBJECT_WITH_ACTS(31, 1739, -1682, -668, 0, 0, 0, 0x0,  bhvDoor, 31),
+	OBJECT_WITH_ACTS(124, 868, 0, 140, 0, 198, 0, 0x230000,  bhvSunkenShipPart2, 31),
+	RETURN()
+};
+
+const LevelScript local_warps_cotmc_1_[] = {
+	WARP_NODE(10, 9, 1, 10, 0),
+	WARP_NODE(11, 9, 1, 12, 0),
+	WARP_NODE(12, 9, 1, 11, 0),
+	WARP_NODE(13, 9, 1, 14, 0),
+	WARP_NODE(14, 9, 1, 13, 0),
+	WARP_NODE(240, 31, 1, 144, 0),
+	WARP_NODE(241, 31, 1, 145, 0),
+	WARP_NODE(0, 9, 1, 10, 0),
+	WARP_NODE(1, 9, 1, 10, 0),
+	WARP_NODE(2, 9, 1, 10, 0),
+	WARP_NODE(3, 9, 1, 10, 0),
+	WARP_NODE(4, 9, 1, 10, 0),
+	WARP_NODE(5, 9, 1, 10, 0),
+	WARP_NODE(6, 9, 1, 10, 0),
+	RETURN()
+};
